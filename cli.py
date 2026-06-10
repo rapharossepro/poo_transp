@@ -10,9 +10,9 @@ from transporte import Metro, Onibus, Veiculo
 
 def criar_dados_padrao(sistema: SistemaTransporte) -> None:
     # 3 Rotas Padrão
-    r1 = Rota("101", "Centro Comercial", 4.50)
-    r2 = Rota("202", "Zona Sul", 5.00)
-    r3 = Rota("303", "Universidade", 3.80)
+    r1 = Rota("101", "Sao Jose", 4.50)
+    r2 = Rota("202", "Inoa", 5.00)
+    r3 = Rota("303", "Itaipuacu", 3.80)
     sistema.rotas.update({r1.codigo: r1, r2.codigo: r2, r3.codigo: r3})
 
     # 3 Motoristas e Veículos Padrão
@@ -48,6 +48,12 @@ def selecionar_estrategia_tarifa(opcao: str) -> EstrategiaTarifa:
 
 def criar_rota(sistema: SistemaTransporte) -> None:
     print("\n--- CRIAR NOVA ROTA ---")
+    if sistema.rotas:
+        print("Rotas já cadastradas:")
+        for rota in sistema.rotas.values():
+            print(f"  • Rota {rota.codigo}: {rota.destino} - Tarifa Base: R${rota.tarifa_base:.2f}")
+        print("-" * 25)
+
     codigo = input("Código/Número da Rota (ex: 404): ").strip()
     destino = input("Destino Final: ").strip()
     try:
