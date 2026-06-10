@@ -35,6 +35,7 @@ python app_terminal.py
 - Criar cartões de transporte
 - Simular cobranças de passagem
 - Verificar o histórico de cobranças
+- Exibir cadastros do sistema (rotas, motoristas e veículos)
 
 ### Facilitadores de Teste (Geração Automática)
 
@@ -42,6 +43,8 @@ Para agilizar as simulações no terminal, você pode simplesmente **pressionar 
 - **CNH do Motorista:** Gera um número aleatório de 11 dígitos.
 - **Placa do Veículo:** Gera uma placa no formato padrão (ex: `ABC-1234`).
 - **Cartão de Transporte:** Gera instantaneamente um ID, nome de passageiro aleatório e um saldo inicial entre R$ 10,00 e R$ 100,00.
+
+Além disso, ao iniciar o sistema, **dados iniciais padrão** (3 rotas, 3 motoristas/veículos, 3 cartões e um histórico de viagens fictício) são carregados automaticamente para que você possa testar as listagens e simulações imediatamente, sem precisar cadastrar tudo do zero.
 
 ## Como o código foi criado
 
