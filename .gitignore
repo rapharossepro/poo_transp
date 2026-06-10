@@ -1,14 +1,21 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
+# Virtual Environments
 venv/
 .venv/
 env/
 
+# IDEs and Editors
 .vscode/
 .idea/
 *.swp
 
+# Relatórios gerados localmente
+relatorio_final.txt
+
+# OS generated files
 .DS_Store
 Thumbs.db
