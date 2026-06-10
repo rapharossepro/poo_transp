@@ -36,3 +36,19 @@ class PagamentoDinheiro(MeioDePagamento):
 
     def conferir_e_debitar(self, valor: float) -> bool:
         return self.valor_entregue >= valor
+
+"""
+class PagamentoPix(MeioDePagamento):
+    def __init__(self, chave_pix: str, saldo_conta: float):
+        self.chave_pix = chave_pix
+        self.saldo_conta = saldo_conta
+
+    def debugar_saldo(self) -> str:
+        return f"PIX ({self.chave_pix}) - Saldo na Conta: R${self.saldo_conta:.2f}"
+
+    def conferir_e_debitar(self, valor: float) -> bool:
+        if self.saldo_conta >= valor:
+            self.saldo_conta -= valor
+            return True
+        return False
+"""
