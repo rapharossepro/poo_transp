@@ -4,6 +4,8 @@ Este projeto em Python simula um sistema básico de transporte urbano com motori
 
 ## Estrutura do projeto
 
+> **Dica para sala de aula:** Este projeto já contém blocos de código comentados propositalmente (como `PagamentoPix` e veículos como `Van` e `Taxi`). A ideia é que você os "descomente" aos poucos durante uma aula para mostrar de forma prática como as interfaces (LSP) e as injeções de dependência (DIP) absorvem a mudança sem quebrar a classe `SistemaTransporte`!
+
 - `app_terminal.py`
   - Entrada principal do sistema. Inicia a interface de terminal que usa os módulos separados.
 - `cli.py`
@@ -96,6 +98,7 @@ No arquivo `pagamento.py`, a classe `MeioDePagamento` é uma Classe Abstrata (In
 - **Polimorfismo na Prática**: A responsabilidade da lógica é empurrada para as classes filhas:
   - O `CartaoTransporte` precisa validar o saldo suficiente e subtrair o valor do seu estado interno.
   - O `PagamentoDinheiro` apenas valida se a cédula entregue cobre o custo da passagem.
+  - *(Exemplo de aula)* O `PagamentoPix` pode ser facilmente ativado para simular o abatimento no saldo de uma conta bancária atrelada à chave Pix informada.
 
 Isso blinda a classe `SistemaTransporte`, que executa a cobrança chamando `meio_pagamento.conferir_e_debitar(valor_final)` sem ter a menor ideia da lógica de pagamento por trás (ela apenas confia no contrato).
 
