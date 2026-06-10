@@ -216,6 +216,22 @@ def listar_status(sistema: SistemaTransporte) -> None:
         print(f"  {log}")
 
 
+def exibir_cadastros(sistema: SistemaTransporte) -> None:
+    print("\n--- LISTA DE CADASTROS (ROTAS / MOTORISTAS / VEÍCULOS) ---")
+    
+    print("\n🛣️  Rotas Cadastradas:")
+    if not sistema.rotas:
+        print("  Nenhuma rota cadastrada.")
+    for rota in sistema.rotas.values():
+        print(f"  • Rota {rota.codigo}: {rota.destino} - Tarifa Base: R${rota.tarifa_base:.2f}")
+
+    print("\n👨‍✈️ Motoristas e Veículos:")
+    if not sistema.motoristas:
+        print("  Nenhum motorista cadastrado.")
+    for motorista in sistema.motoristas.values():
+        veiculo_info = f"{motorista.veiculo.obter_tipo()} ({motorista.veiculo.placa})" if motorista.veiculo else "Sem veículo vinculado"
+        print(f"  • {motorista.nome} (CNH: {motorista.cnh}) - Rota: {motorista.rota.codigo} - Veículo: {veiculo_info}")
+
 def menu_principal() -> None:
     sistema = SistemaTransporte()
     criar_dados_padrao(sistema)
@@ -230,6 +246,7 @@ def menu_principal() -> None:
         print("4. Criar Cartão de Transporte (Saldo)")
         print("5. Simular Cobrança de Passagem (Viagem)")
         print("6. Listar Histórico de Cobranças / Status")
+        print("7. Exibir Cadastros (Rotas/Motoristas/Veículos)")
         print("0. Sair")
         print("=" * 45)
 
@@ -247,6 +264,8 @@ def menu_principal() -> None:
             simular_cobranca(sistema)
         elif opcao == "6":
             listar_status(sistema)
+        elif opcao == "7":
+            exibir_cadastros(sistema)
         elif opcao == "0":
             print("\nEncerrando o sistema de transportes. Até mais!")
             break
