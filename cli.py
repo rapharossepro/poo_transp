@@ -191,6 +191,20 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
 
 def listar_status(sistema: SistemaTransporte) -> None:
     print("\n--- STATUS DO SISTEMA & COBRANÇAS ---")
+    
+    print("\n🛣️  Rotas Cadastradas:")
+    if not sistema.rotas:
+        print("  Nenhuma rota cadastrada.")
+    for rota in sistema.rotas.values():
+        print(f"  • Rota {rota.codigo}: {rota.destino} - Tarifa Base: R${rota.tarifa_base:.2f}")
+
+    print("\n👨‍✈️ Motoristas e Veículos:")
+    if not sistema.motoristas:
+        print("  Nenhum motorista cadastrado.")
+    for motorista in sistema.motoristas.values():
+        veiculo_info = f"{motorista.veiculo.obter_tipo()} ({motorista.veiculo.placa})" if motorista.veiculo else "Sem veículo vinculado"
+        print(f"  • {motorista.nome} (CNH: {motorista.cnh}) - Rota: {motorista.rota.codigo} - Veículo: {veiculo_info}")
+        
     print("\n🛒 Cartões Ativos:")
     for cartao in sistema.cartoes.values():
         print(f"  • {cartao.debugar_saldo()}")
