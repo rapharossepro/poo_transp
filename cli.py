@@ -105,7 +105,12 @@ def vincular_veiculo(sistema: SistemaTransporte) -> None:
             placa = f"{letras}-{numeros}"
             print(f"ℹ️  Placa gerada automaticamente: {placa}")
             
-        modelo = input("Modelo/Marca: ").strip()
+        modelo = input("Modelo/Marca (deixe em branco para gerar aleatório): ").strip()
+        if not modelo:
+            modelos_disponiveis = ["Mercedes-Benz", "Volvo", "Scania", "Marcopolo", "Caio", "Alstom", "BYD"]
+            modelo = random.choice(modelos_disponiveis)
+            print(f"ℹ️  Modelo/Marca gerado automaticamente: {modelo}")
+            
         print("Selecione a Modalidade (LSP):")
         print("1 - Ônibus (Tarifa Normal)")
         print("2 - Metrô (Tarifa + 30%)")
