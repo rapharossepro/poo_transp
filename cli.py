@@ -9,14 +9,33 @@ from transporte import Metro, Onibus, Veiculo
 
 
 def criar_dados_padrao(sistema: SistemaTransporte) -> None:
-    rota_padrao = Rota("101", "Centro Comercial", 4.50)
-    sistema.rotas[rota_padrao.codigo] = rota_padrao
+    # 3 Rotas Padrão
+    r1 = Rota("101", "Centro Comercial", 4.50)
+    r2 = Rota("202", "Zona Sul", 5.00)
+    r3 = Rota("303", "Universidade", 3.80)
+    sistema.rotas.update({r1.codigo: r1, r2.codigo: r2, r3.codigo: r3})
 
-    motorista_padrao = Motorista("12345", "Carlos Silva", rota_padrao)
-    motorista_padrao.veiculo = Onibus("ABC-1234", "Mercedes-Benz")
-    sistema.motoristas[motorista_padrao.nome] = motorista_padrao
+    # 3 Motoristas e Veículos Padrão
+    m1 = Motorista("11111111111", "Carlos Silva", r1)
+    m1.veiculo = Onibus("ABC-1234", "Mercedes-Benz")
+    m2 = Motorista("22222222222", "Maria Oliveira", r2)
+    m2.veiculo = Metro("XYZ-9876", "Alstom")
+    m3 = Motorista("33333333333", "Joao Santos", r3)
+    m3.veiculo = Onibus("DEF-5678", "Volvo")
+    sistema.motoristas.update({m1.nome: m1, m2.nome: m2, m3.nome: m3})
 
-    sistema.cartoes["888"] = CartaoTransporte("888", "Ana Costa (Estudante)", 15.00)
+    # 3 Cartões Padrão
+    c1 = CartaoTransporte("888", "Ana Costa (Estudante)", 50.00)
+    c2 = CartaoTransporte("999", "Pedro Alves", 100.00)
+    c3 = CartaoTransporte("777", "Mariana Lima", 20.00)
+    sistema.cartoes.update({c1.id_cartao: c1, c2.id_cartao: c2, c3.id_cartao: c3})
+
+    # Histórico fake gerado executando cobranças reais na inicialização
+    print("⏳ Carregando dados do sistema e gerando histórico de viagens...\n")
+    sistema.executar_cobranca(m1, c2, TarifaPadrao())
+    sistema.executar_cobranca(m3, c1, TarifaEstudantil())
+    sistema.executar_cobranca(m2, c3, TarifaPico())
+    sistema.executar_cobranca(m1, PagamentoDinheiro(10.00), TarifaPadrao())
 
 
 def selecionar_estrategia_tarifa(opcao: str) -> EstrategiaTarifa:
