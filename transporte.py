@@ -32,7 +32,7 @@ class Metro(Veiculo):
 
 """class Van(Veiculo):
     def obter_tipo(self) -> str:
-        return "Metrô"
+        return "Van"
 
     def obter_multiplicador_tarifa(self) -> float:
         return 0.8
@@ -40,7 +40,7 @@ class Metro(Veiculo):
 
 """class Taxi(Veiculo):
     def obter_tipo(self) -> str:
-        return "Metrô"
+        return "Táxi"
 
     def obter_multiplicador_tarifa(self) -> float:
         return 2.5
