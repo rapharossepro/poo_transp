@@ -36,6 +36,13 @@ python app_terminal.py
 - Simular cobranças de passagem
 - Verificar o histórico de cobranças
 
+### Facilitadores de Teste (Geração Automática)
+
+Para agilizar as simulações no terminal, você pode simplesmente **pressionar Enter deixando o campo em branco** em algumas etapas para que o sistema gere dados fictícios automaticamente:
+- **CNH do Motorista:** Gera um número aleatório de 11 dígitos.
+- **Placa do Veículo:** Gera uma placa no formato padrão (ex: `ABC-1234`).
+- **Cartão de Transporte:** Gera instantaneamente um ID, nome de passageiro aleatório e um saldo inicial entre R$ 10,00 e R$ 100,00.
+
 ## Como o código foi criado
 
 A aplicação original estava em um único arquivo com todas as classes e a interface de terminal. A modularização dividiu o sistema em camadas claras:
@@ -93,4 +100,3 @@ Se `MeioDePagamento` tivesse lógica genérica implementada com base no uso de `
 ## Observações finais
 
 A modularização torna o projeto mais fácil de estender e testar. Para evoluir o sistema, basta adicionar novas estratégias, meios de pagamento ou tipos de veículo nos módulos específicos, sem alterar a lógica de cobrança central.
-
