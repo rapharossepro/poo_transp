@@ -75,9 +75,22 @@ Cada abstração é pequena e específica:
 - `EstrategiaTarifa` define apenas o cálculo do valor.
 
 ### D — Dependency Inversion Principle
-
 O `SistemaTransporte` depende de abstrações (`MeioDePagamento`, `EstrategiaTarifa`), não de implementações concretas. Assim, o sistema aceita `CartaoTransporte` ou `PagamentoDinheiro` sem mudanças.
+
+## Destaque de Arquitetura: O Poder das Interfaces
+
+No arquivo `pagamento.py`, a classe `MeioDePagamento` é uma Classe Abstrata (Interface) sem implementação lógica, contendo apenas assinaturas de métodos. Isso reflete uma das ferramentas mais poderosas da Orientação a Objetos:
+
+- **Contrato Obrigatório**: A classe dita as regras. Qualquer meio de pagamento adicionado ao sistema é OBRIGADO a ter os métodos `debugar_saldo` e `conferir_e_debitar`.
+- **Polimorfismo na Prática**: A responsabilidade da lógica é empurrada para as classes filhas:
+  - O `CartaoTransporte` precisa validar o saldo suficiente e subtrair o valor do seu estado interno.
+  - O `PagamentoDinheiro` apenas valida se a cédula entregue cobre o custo da passagem.
+
+Isso blinda a classe `SistemaTransporte`, que executa a cobrança chamando `meio_pagamento.conferir_e_debitar(valor_final)` sem ter a menor ideia da lógica de pagamento por trás (ela apenas confia no contrato).
+
+Se `MeioDePagamento` tivesse lógica genérica implementada com base no uso de `if/else` para avaliar o tipo de pagamento, quebraríamos o Princípio do Aberto/Fechado (OCP) e o Princípio da Inversão de Dependência (DIP). Da forma como foi desenhado, o "core" de pagamentos do sistema está perfeitamente protegido e desacoplado!
 
 ## Observações finais
 
 A modularização torna o projeto mais fácil de estender e testar. Para evoluir o sistema, basta adicionar novas estratégias, meios de pagamento ou tipos de veículo nos módulos específicos, sem alterar a lógica de cobrança central.
+
