@@ -102,7 +102,18 @@ def vincular_veiculo(sistema: SistemaTransporte) -> None:
 
 def criar_cartao(sistema: SistemaTransporte) -> None:
     print("\n--- CRIAR CARTÃO DE TRANSPORTE ---")
-    id_cartao = input("Número/ID do Cartão: ").strip()
+    id_cartao = input("Número/ID do Cartão (deixe em branco para gerar aleatório): ").strip()
+
+    if not id_cartao:
+        id_cartao = str(random.randint(100000, 999999))
+        nomes = ["Ana", "Carlos", "Beatriz", "João", "Mariana", "Lucas", "Fernanda", "Rafael"]
+        sobrenomes = ["Silva", "Costa", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Alves"]
+        titular = f"{random.choice(nomes)} {random.choice(sobrenomes)}"
+        saldo = round(random.uniform(10.0, 100.0), 2)
+        sistema.cartoes[id_cartao] = CartaoTransporte(id_cartao, titular, saldo)
+        print(f"ℹ️  Cartão gerado automaticamente: ID {id_cartao} | Titular: {titular} | Saldo: R${saldo:.2f}")
+        return
+        
     titular = input("Nome do Titular: ").strip()
     try:
         saldo = float(input("Saldo Inicial (R$): "))
