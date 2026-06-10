@@ -1,8 +1,10 @@
+import random
+import string
 from typing import Optional
 from dominio import Motorista, Rota
 from pagamento import CartaoTransporte, PagamentoDinheiro
 from sistema import SistemaTransporte
-from tarifas import TarifaPadrao, TarifaPico, TarifaEstudantil
+from tarifas import TarifaPadrao, TarifaPico, TarifaEstudantil, EstrategiaTarifa
 from transporte import Metro, Onibus, Veiculo
 
 
@@ -17,7 +19,7 @@ def criar_dados_padrao(sistema: SistemaTransporte) -> None:
     sistema.cartoes["888"] = CartaoTransporte("888", "Ana Costa (Estudante)", 15.00)
 
 
-def selecionar_estrategia_tarifa(opcao: str):
+def selecionar_estrategia_tarifa(opcao: str) -> EstrategiaTarifa:
     if opcao == "2":
         return TarifaPico()
     if opcao == "3":
@@ -48,7 +50,12 @@ def cadastrar_motorista(sistema: SistemaTransporte) -> None:
 
     if cod_rota in sistema.rotas:
         nome = input("Nome do Motorista: ").strip()
-        cnh = input("Número da CNH: ").strip()
+        cnh = input("Número da CNH (deixe em branco para gerar aleatório): ").strip()
+        
+        if not cnh:
+            cnh = str(random.randint(10000000000, 99999999999))
+            print(f"ℹ️  CNH gerada automaticamente: {cnh}")
+            
         sistema.motoristas[nome] = Motorista(cnh, nome, sistema.rotas[cod_rota])
         print(f"✨ Motorista '{nome}' vinculado com sucesso à rota {cod_rota}!")
     else:
@@ -65,14 +72,28 @@ def vincular_veiculo(sistema: SistemaTransporte) -> None:
     nome_mot = input("Digite o nome do motorista para receber o veículo: ").strip()
 
     if nome_mot in sistema.motoristas:
-        placa = input("Placa do Veículo: ").strip()
+        placa = input("Placa do Veículo (deixe em branco para gerar aleatório): ").strip()
+        
+        if not placa:
+            letras = ''.join(random.choices(string.ascii_uppercase, k=3))
+            numeros = f"{random.randint(0, 9999):04d}"
+            placa = f"{letras}-{numeros}"
+            print(f"ℹ️  Placa gerada automaticamente: {placa}")
+            
         modelo = input("Modelo/Marca: ").strip()
         print("Selecione a Modalidade (LSP):")
         print("1 - Ônibus (Tarifa Normal)")
         print("2 - Metrô (Tarifa + 30%)")
         tipo = input("Opção: ").strip()
 
-        veiculo: Veiculo = Onibus(placa, modelo) if tipo != "2" else Metro(placa, modelo)
+        if tipo == "1":
+            veiculo: Veiculo = Onibus(placa, modelo)
+        elif tipo == "2":
+            veiculo = Metro(placa, modelo)
+        else:
+            print("❌ Opção de veículo inválida. Operação cancelada.")
+            return
+            
         sistema.motoristas[nome_mot].veiculo = veiculo
         print(f"✨ Veículo {veiculo.obter_tipo()} ({placa}) alocado ao motorista {nome_mot}!")
     else:
@@ -128,12 +149,14 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
             sistema.executar_cobranca(motorista, sistema.cartoes[id_car], estrategia)
         else:
             print("❌ Cartão não encontrado.")
-    else:
+    elif op_pagamento == "2":
         try:
             valor_cedula = float(input("Valor da nota entregue pelo passageiro (R$): "))
             sistema.executar_cobranca(motorista, PagamentoDinheiro(valor_cedula), estrategia)
         except ValueError:
             print("❌ Valor de cédula inválido.")
+    else:
+        print("❌ Opção de pagamento inválida.")
 
 
 def listar_status(sistema: SistemaTransporte) -> None:
