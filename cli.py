@@ -1,5 +1,4 @@
 from typing import Optional
-
 from dominio import Motorista, Rota
 from pagamento import CartaoTransporte, PagamentoDinheiro
 from sistema import SistemaTransporte
