@@ -154,8 +154,10 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
         print("❌ Sem motoristas ou linhas prontas para operar.")
         return
 
-    print("Motoristas em operação:", list(sistema.motoristas.keys()))
-    nome_mot = input("Quem está dirigindo nesta viagem? ").strip()
+    print("Motoristas em operação:")
+    for m in sistema.motoristas.values():
+        print(f"  • {m.nome} (Rota {m.rota.codigo})")
+    nome_mot = input("\nQuem está dirigindo nesta viagem? ").strip()
 
     if nome_mot not in sistema.motoristas:
         print("❌ Motorista inválido.")
@@ -169,6 +171,9 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
     opcao = input("Opção: ").strip()
     estrategia = selecionar_estrategia_tarifa(opcao)
 
+    valor_passagem = sistema.calcular_valor_viagem(motorista, estrategia)
+    print(f"\n💵 Valor calculado para esta viagem: R${valor_passagem:.2f}")
+
     print("\nEscolha a Forma de Cobrança (DIP):")
     print("1 - Cartão de Transporte")
     print("2 - Dinheiro Físico na Catraca")
@@ -179,16 +184,24 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
             print("❌ Nenhum cartão cadastrado no sistema.")
             return
 
-        print("Cartões disponíveis:", list(sistema.cartoes.keys()))
-        id_car = input("Digite o ID do cartão: ").strip()
+        print("\nCartões disponíveis:")
+        for c in sistema.cartoes.values():
+            print(f"  • ID: {c.id_cartao} | {c.titular} (Saldo: R${c.saldo:.2f})")
+            
+        id_car = input("\nDigite o ID do cartão: ").strip()
         if id_car in sistema.cartoes:
+            print("\n--- RESULTADO DA COBRANÇA ---")
             sistema.executar_cobranca(motorista, sistema.cartoes[id_car], estrategia)
+            print(f"📊 Status atualizado: {sistema.cartoes[id_car].debugar_saldo()}")
+            print("-" * 29)
         else:
             print("❌ Cartão não encontrado.")
     elif op_pagamento == "2":
         try:
             valor_cedula = float(input("Valor da nota entregue pelo passageiro (R$): "))
+            print("\n--- RESULTADO DA COBRANÇA ---")
             sistema.executar_cobranca(motorista, PagamentoDinheiro(valor_cedula), estrategia)
+            print("-" * 29)
         except ValueError:
             print("❌ Valor de cédula inválido.")
     else:
@@ -196,30 +209,21 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
 
 
 def listar_status(sistema: SistemaTransporte) -> None:
-    print("\n--- STATUS DO SISTEMA & COBRANÇAS ---")
-    
-    print("\n🛣️  Rotas Cadastradas:")
-    if not sistema.rotas:
-        print("  Nenhuma rota cadastrada.")
-    for rota in sistema.rotas.values():
-        print(f"  • Rota {rota.codigo}: {rota.destino} - Tarifa Base: R${rota.tarifa_base:.2f}")
+    print("\n--- STATUS FINANCEIRO E COBRANÇAS ---")
 
-    print("\n👨‍✈️ Motoristas e Veículos:")
-    if not sistema.motoristas:
-        print("  Nenhum motorista cadastrado.")
-    for motorista in sistema.motoristas.values():
-        veiculo_info = f"{motorista.veiculo.obter_tipo()} ({motorista.veiculo.placa})" if motorista.veiculo else "Sem veículo vinculado"
-        print(f"  • {motorista.nome} (CNH: {motorista.cnh}) - Rota: {motorista.rota.codigo} - Veículo: {veiculo_info}")
-        
-    print("\n🛒 Cartões Ativos:")
+    print("\n Cartões Ativos:")
     for cartao in sistema.cartoes.values():
         print(f"  • {cartao.debugar_saldo()}")
 
-    print("\n📋 Histórico de Cobranças Superiores:")
+    print("\n📋 Histórico de Cobranças:")
     if not sistema.historico_cobrancas:
         print("  Nenhuma cobrança efetuada ainda.")
     for log in sistema.historico_cobrancas:
         print(f"  {log}")
+
+    print("-" * 45)
+    print(f"💰 TOTAL ARRECADADO NO SISTEMA: R${sistema.total_arrecadado:.2f}")
+    print("-" * 45)
 
 
 def exibir_cadastros(sistema: SistemaTransporte) -> None:
@@ -231,12 +235,35 @@ def exibir_cadastros(sistema: SistemaTransporte) -> None:
     for rota in sistema.rotas.values():
         print(f"  • Rota {rota.codigo}: {rota.destino} - Tarifa Base: R${rota.tarifa_base:.2f}")
 
-    print("\n👨‍✈️ Motoristas e Veículos:")
+    print("\n👨‍✈️ Motoristas Cadastrados:")
     if not sistema.motoristas:
         print("  Nenhum motorista cadastrado.")
     for motorista in sistema.motoristas.values():
-        veiculo_info = f"{motorista.veiculo.obter_tipo()} ({motorista.veiculo.placa})" if motorista.veiculo else "Sem veículo vinculado"
-        print(f"  • {motorista.nome} (CNH: {motorista.cnh}) - Rota: {motorista.rota.codigo} - Veículo: {veiculo_info}")
+        print(f"  • {motorista.nome} (CNH: {motorista.cnh}) - Rota alocada: {motorista.rota.codigo}")
+
+    print("\n🚌 Veículos da Frota:")
+    veiculos_encontrados = False
+    for motorista in sistema.motoristas.values():
+        if motorista.veiculo:
+            veiculos_encontrados = True
+            print(f"  • {motorista.veiculo.obter_tipo()} | Placa: {motorista.veiculo.placa} | Modelo: {motorista.veiculo.modelo} (Conduzido por: {motorista.nome})")
+    if not veiculos_encontrados:
+        print("  Nenhum veículo vinculado à frota no momento.")
+
+
+def salvar_relatorio(sistema: SistemaTransporte) -> None:
+    with open("relatorio_final.txt", "w", encoding="utf-8") as f:
+        f.write("--- RELATÓRIO FINAL DE COBRANÇAS ---\n\n")
+        if not sistema.historico_cobrancas:
+            f.write("Nenhuma cobrança efetuada nesta sessão.\n")
+        else:
+            for log in sistema.historico_cobrancas:
+                f.write(f"{log}\n")
+        f.write("\n" + "-" * 45 + "\n")
+        f.write(f"TOTAL ARRECADADO NO SISTEMA: R${sistema.total_arrecadado:.2f}\n")
+        f.write("-" * 45 + "\n")
+    print("📄 Relatório salvo com sucesso em 'relatorio_final.txt'!")
+
 
 def menu_principal() -> None:
     sistema = SistemaTransporte()
@@ -273,7 +300,11 @@ def menu_principal() -> None:
         elif opcao == "7":
             exibir_cadastros(sistema)
         elif opcao == "0":
-            print("\nEncerrando o sistema de transportes. Até mais!")
+            print("\nEncerrando o sistema de transportes...")
+            salvar_relatorio(sistema)
+            print("Até mais!")
             break
         else:
             print("❌ Opção inválida. Tente novamente.")
+            
+        input("\nPressione Enter para continuar...")
