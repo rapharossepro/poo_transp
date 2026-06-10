@@ -3,9 +3,11 @@ import string
 from typing import Optional
 from dominio import Motorista, Rota
 from pagamento import CartaoTransporte, PagamentoDinheiro
+# from pagamento import PagamentoPix
 from sistema import SistemaTransporte
 from tarifas import TarifaPadrao, TarifaPico, TarifaEstudantil, EstrategiaTarifa
 from transporte import Metro, Onibus, Veiculo
+# from transporte import Van, Taxi
 
 
 def criar_dados_padrao(sistema: SistemaTransporte) -> None:
@@ -114,12 +116,18 @@ def vincular_veiculo(sistema: SistemaTransporte) -> None:
         print("Selecione a Modalidade (LSP):")
         print("1 - Ônibus (Tarifa Normal)")
         print("2 - Metrô (Tarifa + 30%)")
+        # print("3 - Van (Tarifa - 20%)")
+        # print("4 - Táxi (Tarifa + 150%)")
         tipo = input("Opção: ").strip()
 
         if tipo == "1":
             veiculo: Veiculo = Onibus(placa, modelo)
         elif tipo == "2":
             veiculo = Metro(placa, modelo)
+        # elif tipo == "3":
+        #     veiculo = Van(placa, modelo)
+        # elif tipo == "4":
+        #     veiculo = Taxi(placa, modelo)
         else:
             print("❌ Opção de veículo inválida. Operação cancelada.")
             return
@@ -182,6 +190,7 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
     print("\nEscolha a Forma de Cobrança (DIP):")
     print("1 - Cartão de Transporte")
     print("2 - Dinheiro Físico na Catraca")
+    # print("3 - Pagamento via PIX")
     op_pagamento = input("Opção: ").strip()
 
     if op_pagamento == "1":
@@ -209,6 +218,11 @@ def simular_cobranca(sistema: SistemaTransporte) -> None:
             print("-" * 29)
         except ValueError:
             print("❌ Valor de cédula inválido.")
+    # elif op_pagamento == "3":
+    #     chave_pix = input("Chave PIX (ex: celular/email): ").strip()
+    #     print("\n--- RESULTADO DA COBRANÇA ---")
+    #     sistema.executar_cobranca(motorista, PagamentoPix(chave_pix, 150.00), estrategia) # Saldo mockado de R$ 150,00 para aula
+    #     print("-" * 29)
     else:
         print("❌ Opção de pagamento inválida.")
 
